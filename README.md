@@ -1,5 +1,5 @@
-An Akka Actors "Kill The Circles" Game
-======================================
+An Akka Actors "Kill The Characters" Game
+=========================================
 
 This is a simple video game written with the Scala programming language
 and Akka Actors.
@@ -10,6 +10,13 @@ Object of the Game
 The object of the game is to type all of the letters and numbers
 before they reach the top of the screen. If you type them all first,
 you win, otherwise you lose.
+
+Status
+------
+
+This is very much an "Alpha" release. Everything seemed to be working
+well on my old iMac, and then I tried using it on my new MBA, and, 
+well ...
 
 Demonstration
 -------------
