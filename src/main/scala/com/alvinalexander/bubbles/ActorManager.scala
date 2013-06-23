@@ -8,6 +8,7 @@ case class SetInitialNumActors(num: Int)
 
 /**
  * Responsibilities:
+ * 
  * 1) kill the actors
  * 2) shut down the system
  * 3) show the "You Win" message when all the actors are stopped

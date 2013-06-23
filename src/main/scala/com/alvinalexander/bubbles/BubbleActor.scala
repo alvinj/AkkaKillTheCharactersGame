@@ -4,6 +4,9 @@ import akka.actor._
 import java.awt.Color
 import javax.swing.SwingUtilities
 
+/**
+ * A class to represent each instance of a "bubble".
+ */
 class BubbleActor(
     bubblePanelActor: ActorRef,
     name: String,

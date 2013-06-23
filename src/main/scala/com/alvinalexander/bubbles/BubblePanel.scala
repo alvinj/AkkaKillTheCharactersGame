@@ -5,6 +5,9 @@ import java.awt._
 import javax.swing.JPanel
 import javax.swing.SwingUtilities
 
+/**
+ * This is the JPanel that all of the bubbles are drawn on.
+ */
 class BubblePanel extends JPanel {
 
   private var bubble: Bubble = null
