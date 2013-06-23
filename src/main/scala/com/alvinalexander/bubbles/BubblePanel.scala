@@ -18,6 +18,7 @@ class BubblePanel extends JPanel {
   }
 
   // clearRect clears the rectangular area, filling it with the current bg color
+  // TODO: i can do this better/faster, but this is working okay
   override def paintComponent(g: Graphics) {
     if (bubble != null) {
       val g2 = g.asInstanceOf[Graphics2D]

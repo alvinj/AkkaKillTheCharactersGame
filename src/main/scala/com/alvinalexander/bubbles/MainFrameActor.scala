@@ -8,6 +8,7 @@ import java.awt.Graphics2D
 import java.awt.Font
 import java.awt.event.KeyListener
 import java.awt.event.KeyEvent
+import akka.actor.ActorRef
 
 /**
  * An Actor to handle all the interactions with the JFrame. 
@@ -21,39 +22,44 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
     case _ =>
   }
   
+  val myKeyListener = new KeyListener {
+    override def keyPressed(e: KeyEvent) 
+    {
+      if (e.getKeyCode == KeyEvent.VK_ESCAPE) {
+        // TODO quit the app
+      } else {
+        // look up the peer actor and kill it (assuming the keystroke is right. invalid keystrokes cause no problems)
+        attemptToKillActorForCharacter(e.getKeyChar)
+      }
+    }
+
+    override def keyReleased(e: KeyEvent) {} 
+    override def keyTyped(e: KeyEvent) {}
+  }
+
   val mainFrame = new JFrame {
     setMinimumSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT))
     setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT))
-    val myKeyListener = new KeyListener {
-      override def keyPressed(e: KeyEvent) 
-      {
-        if (e.getKeyCode == KeyEvent.VK_ESCAPE) {
-          // TODO quit the app
-        } else {
-          // look up the peer actor and kill it (assuming the keystroke is right. invalid keystrokes cause no problems)
-          val char = e.getKeyChar
-          val actor = context.actorFor(Seq("..", char.toString))
-          val playSoundActor = context.actorFor(Seq("..", PLAY_SOUND_ACTOR_NAME))
-          if (actor.isTerminated) {
-            playSoundActor ! PlayFailureSound
-          } else {
-            // actor exists
-            playSoundActor ! PlaySuccessSound
-            val actorManager = context.actorFor(Seq("..", ACTOR_MANAGER_NAME))
-            actorManager ! KillActor(actor)
-          }
-        }
-      }
-    
-      override def keyReleased(e: KeyEvent) {} 
-      override def keyTyped(e: KeyEvent) {}
-    
-    }
     addKeyListener(myKeyListener)
-
   }
 
   configureMainFrame
+  
+  def getCharacterActor(c: Char) = context.actorFor(Seq("..", c.toString))
+  def getPlaySoundActor = context.actorFor(Seq("..", PLAY_SOUND_ACTOR_NAME))
+  def attemptToKillActorForCharacter(c: Char) {
+    val characterActor = getCharacterActor(c)
+    val playSoundActor = getPlaySoundActor
+    if (characterActor.isTerminated) {
+      // character/actor does not exist
+      playSoundActor ! PlayFailureSound
+    } else {
+      // character/actor exists
+      playSoundActor ! PlaySuccessSound
+      val actorManager = context.actorFor(Seq("..", ACTOR_MANAGER_NAME))
+      actorManager ! KillActor(characterActor)
+    }
+  }
 
   def configureMainFrame {
     mainFrame.setTitle(APPLICATION_NAME)
@@ -65,11 +71,13 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
   }
   
   def showGameOverWindow {
+    mainFrame.removeKeyListener(myKeyListener)
     mainFrame.setGlassPane(new GameOverPanel)
     mainFrame.getGlassPane.setVisible(true)
   }
   
   def showYouWinWindow {
+    mainFrame.removeKeyListener(myKeyListener)
     mainFrame.setGlassPane(new YouWinPanel)
     mainFrame.getGlassPane.setVisible(true)
   }
@@ -96,8 +104,6 @@ class GameOverPanel extends JPanel {
   }
   
 }
-
-////////////////////////////////////
 
 class YouWinPanel extends JPanel {
   override def paintComponent(g: Graphics) {
