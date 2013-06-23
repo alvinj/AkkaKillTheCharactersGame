@@ -28,7 +28,7 @@ object AkkaBubblesGame extends App {
   val playSoundActor = actorSystem.actorOf(Props(new PlaySoundActor()), name = PLAY_SOUND_ACTOR_NAME)
   
   // set the desired number of bubbles, allowing cmd-line override
-  var numBubbles = NUM_BUBBLES
+  var numBubbles = NUM_CIRCLES
   overrideSettingsWithCommandLineArgs
   actorManager ! SetInitialNumActors(numBubbles)
 
@@ -51,7 +51,7 @@ object AkkaBubblesGame extends App {
     val chars = Utils.getRandomChars(numBubbles)
     for (i <- 0 to numBubbles-1) {
       val name = chars(i).toString
-      val xPos = i * SPACE_BETWEEN_BUBBLES + INITIAL_SPACE
+      val xPos = i * SPACE_BETWEEN_CIRCLES + INITIAL_SPACE
       val speed = (Utils.getRandomSpeed(i) * speedMultiplier).toInt
       val (fgColor, bgColor) = COLORS(i)
       bubbles(i) = actorSystem.actorOf(Props(new BubbleActor(bubblePanelActor, name, fgColor, bgColor, chars(i), xPos, speed)), name = name)

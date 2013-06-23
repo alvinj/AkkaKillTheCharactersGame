@@ -25,7 +25,6 @@ You can see the game in action here:
 
 * http://alvinalexander.com/scala/akka-actors-game
 
-
 Running the Game
 ----------------
 
@@ -56,4 +55,10 @@ java -client -Dsun.java2d.opengl=true -jar AkkaCharactersGame-1.0.jar
 ```
 
 In theory that command should make the game run a little faster, or redraw better.
+
+Created By
+----------
+
+The original game was created by Alvin Alexander, http://alvinalexander.com
+
 

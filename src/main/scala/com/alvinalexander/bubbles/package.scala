@@ -1,14 +1,20 @@
 package com.alvinalexander
 
 import java.awt.Color
+import java.awt.Font
 
 package object bubbles {
   
-  val SCREEN_HEIGHT = 600
-  val SCREEN_WIDTH  = 800
-  val NUM_BUBBLES   = 10
-  val SPACE_BETWEEN_BUBBLES = 72
-  val INITIAL_SPACE = 40
+  val SCREEN_HEIGHT = 625
+  val SCREEN_WIDTH  = 1000
+
+  val NUM_CIRCLES           = 10
+  val CIRCLE_DIAMETER       = 60
+  val SPACE_BETWEEN_CIRCLES = 95
+  val INITIAL_SPACE         = 30
+  val CIRCLE_FONT           = new Font("Sans Serif", Font.BOLD, 26)
+  val CIRCLE_FONT_PADDING_X = 22
+  val CIRCLE_FONT_PADDING_Y = 38
 
   val APPLICATION_NAME        = "Akka Actors Video Game #1"
   val ACTOR_SYSTEM_NAME       = "TinyBubbles"

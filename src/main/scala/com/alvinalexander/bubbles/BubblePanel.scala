@@ -32,9 +32,9 @@ class BubblePanel extends JPanel {
       g2.setColor(bubble.bgColor)
       g2.fillOval(bubble.x, bubble.y, bubble.circleDiameter, bubble.circleDiameter)
       // draw the character
-      g2.setFont(new Font("Sans Serif", Font.BOLD, 18))
+      g2.setFont(CIRCLE_FONT)
       g2.setColor(bubble.fgColor)
-      g2.drawString(bubble.char.toString, bubble.x+14, bubble.y+26)
+      g2.drawString(bubble.char.toString, bubble.x+CIRCLE_FONT_PADDING_X, bubble.y+CIRCLE_FONT_PADDING_Y)
     }
   }
 

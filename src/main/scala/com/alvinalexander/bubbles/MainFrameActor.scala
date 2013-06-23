@@ -100,7 +100,7 @@ class GameOverPanel extends JPanel {
     val g2 = g.asInstanceOf[Graphics2D]
     g2.setFont(new Font("Sans Serif", Font.BOLD, 60))
     g2.setColor(Color.RED)
-    g2.drawString("GAME OVER", 200, 320)
+    g2.drawString("GAME OVER", 300, 320)
   }
   
 }
@@ -110,7 +110,7 @@ class YouWinPanel extends JPanel {
     val g2 = g.asInstanceOf[Graphics2D]
     g2.setFont(new Font("Sans Serif", Font.BOLD, 60))
     g2.setColor(Color.GREEN)
-    g2.drawString("YOU WIN!", 230, 320)
+    g2.drawString("YOU WIN!", 330, 320)
   }
   
 }

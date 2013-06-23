@@ -18,7 +18,7 @@ class BubbleActor(
 
   val panelWidth = SCREEN_WIDTH
   val panelHeight = SCREEN_HEIGHT
-  val diameter = 40
+  val diameter = CIRCLE_DIAMETER
   
   var y = panelHeight - diameter
   var lastX = 0
