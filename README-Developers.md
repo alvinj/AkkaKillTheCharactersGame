@@ -33,12 +33,6 @@ a game here. It isn't horrible, but there are a few things like a) handling
 keystrokes and b) moving responsibilities around that should be improved.
 
 
-To-Do
------
-
-* Add a little documentation
-
-
 JVM Notes
 ---------
 

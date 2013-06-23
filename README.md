@@ -16,14 +16,14 @@ Status
 
 This is very much an "Alpha" release. Everything seemed to be working
 well on my old iMac, and then I tried using it on my new MBA, and, 
-well ...
+well ... I think I got the bugs worked out.
 
 Demonstration
 -------------
 
 You can see the game in action here:
 
-URLHERE
+* http://alvinalexander.com/scala/akka-actors-game
 
 
 Running the Game
@@ -48,7 +48,7 @@ You can also adjust the game speed. Set the game to use four circles and double 
 java -jar AkkaCharactersGame-1.0.jar -n 4 -s 2.0
 ```
 
-I haven't seen any problems with the game on my seven-year-old Mac, but if you do,
+I haven't seen any problems with the game on my six-year-old Mac, but if you do,
 you can try running it like this:
 
 ```
