@@ -4,6 +4,7 @@ import akka.actor.Actor
 import java.awt._
 import javax.swing.JPanel
 import javax.swing.SwingUtilities
+import java.awt.image.BufferedImage
 
 /**
  * This is the JPanel that all of the bubbles are drawn on.
@@ -20,21 +21,11 @@ class BubblePanel extends JPanel {
     paintImmediately(bubble.x, bubble.y, bubble.circleDiameter, redrawHeight)
   }
 
-  // clearRect clears the rectangular area, filling it with the current bg color
-  // TODO: i can do this better/faster, but this is working okay
+  // the bubbles now draw themselves 
   override def paintComponent(g: Graphics) {
     if (bubble != null) {
-      val g2 = g.asInstanceOf[Graphics2D]
-      // clear the previous circle
-      g2.setBackground(Color.BLACK)
-      g2.clearRect(bubble.lastX, bubble.lastY, bubble.circleDiameter, bubble.circleDiameter)
-      // draw the circle
-      g2.setColor(bubble.bgColor)
-      g2.fillOval(bubble.x, bubble.y, bubble.circleDiameter, bubble.circleDiameter)
-      // draw the character
-      g2.setFont(CIRCLE_FONT)
-      g2.setColor(bubble.fgColor)
-      g2.drawString(bubble.char.toString, bubble.x+CIRCLE_FONT_PADDING_X, bubble.y+CIRCLE_FONT_PADDING_Y)
+      val component = this.asInstanceOf[Component]
+      bubble.drawBubbleFast(g, component.getGraphicsConfiguration)
     }
   }
 
@@ -42,10 +33,12 @@ class BubblePanel extends JPanel {
 
 ////////////////////////////////////////////////////////////////
 
+case class Redraw(bubble: Bubble)
+
 class BubblePanelActor(bubblePanel: BubblePanel) extends Actor {
 
   def receive = {
-    case bubble: Bubble => doRedraw(bubble) 
+    case Redraw(bubble) => doRedraw(bubble) 
     case _ =>
   }
 

@@ -5,18 +5,18 @@ import java.awt.Font
 
 package object bubbles {
   
-  val SCREEN_HEIGHT = 625
-  val SCREEN_WIDTH  = 1000
+  val SCREEN_HEIGHT = 600
+  val SCREEN_WIDTH  = 800
 
   val NUM_CIRCLES           = 10
-  val CIRCLE_DIAMETER       = 60
-  val SPACE_BETWEEN_CIRCLES = 95
-  val INITIAL_SPACE         = 30
-  val CIRCLE_FONT           = new Font("Sans Serif", Font.BOLD, 26)
-  val CIRCLE_FONT_PADDING_X = 22
-  val CIRCLE_FONT_PADDING_Y = 38
+  val CIRCLE_DIAMETER       = 40
+  val SPACE_BETWEEN_CIRCLES = 72
+  val INITIAL_SPACE         = 40
+  val CIRCLE_FONT           = new Font("Sans Serif", Font.BOLD, 22)
+  val CIRCLE_FONT_PADDING_X = 13
+  val CIRCLE_FONT_PADDING_Y = 28
 
-  val APPLICATION_NAME        = "Akka Actors Video Game #1"
+  val APPLICATION_NAME        = "Akka Actors 'Kill The Characters' Game"
   val ACTOR_SYSTEM_NAME       = "TinyBubbles"
   val BUBBLE_PANEL_ACTOR_NAME = "bubblePanelActor"
   val MAIN_FRAME_ACTOR_NAME   = "mainFrameActor"
@@ -24,10 +24,6 @@ package object bubbles {
   val PLAY_SOUND_ACTOR_NAME   = "playSoundActor"
   val ACTOR_MANAGER_NAME      = "actorManager"
 
-  // sound actor
-  val SUCCESS_SOUND_FILENAME = "Synth-Zingers-04.aif"
-  val FAILURE_SOUND_FILENAME = "Comedy-Low-Honk.aif"
-    
   val COLORS = Array(
       (Color.WHITE, Color.BLUE), 
       (Color.BLACK, Color.CYAN), 
@@ -41,14 +37,10 @@ package object bubbles {
       (Color.BLACK, Color.YELLOW))
 
   // actor messages
-  case object DisplayMainFrame
-  case object Tick
   case object GameOver
-  case object ShowGameOverWindow
-  case object ShowYouWinWindow
-  
-  case object PlaySuccessSound
-  case object PlayFailureSound
 
 }
+
+
+
 

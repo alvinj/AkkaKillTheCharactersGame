@@ -5,9 +5,14 @@ import java.io._
 import sun.audio._
 import javax.sound.sampled.AudioSystem
 
+case object PlaySuccessSound
+case object PlayFailureSound
+    
 class PlaySoundActor extends Actor {
 
-  // this actor doesn't really receive, it just sends
+  private val SUCCESS_SOUND_FILENAME = "Synth-Zingers-04.aif"
+  private val FAILURE_SOUND_FILENAME = "Comedy-Low-Honk.aif"
+
   def receive = {
     case PlaySuccessSound => playSoundFile(SUCCESS_SOUND_FILENAME)
     case PlayFailureSound => playSoundFile(FAILURE_SOUND_FILENAME)
@@ -15,22 +20,13 @@ class PlaySoundActor extends Actor {
   }
 
   def playSoundFile(filename: String) {
-    // WORKS
-//    val fis = new FileInputStream(filename)
-//    val audioStream = new AudioStream(fis)
-//    AudioPlayer.player.start(audioStream)
-
-//    val inputStream = getClass.getResourceAsStream("Synth-Zingers-04.aif")
-//    val audioInputStream = AudioSystem.getAudioInputStream(inputStream)
-//    AudioPlayer.player.start(audioInputStream)
-    
-    val CLDR = this.getClass.getClassLoader
-    val inputStream = CLDR.getResourceAsStream(filename)
+    val classloader = getClass.getClassLoader
+    val inputStream = classloader.getResourceAsStream(filename)
     val audioStream = new AudioStream(inputStream)
     AudioPlayer.player.start(audioStream)
     
-    // TODO sound won't play if you close the file right away; timing issue?
-    //fis.close
+    // TODO sound won't play if the file is closed right away
+    //inputStream.close
   }
 
 }

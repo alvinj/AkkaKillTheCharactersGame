@@ -4,8 +4,15 @@ import akka.actor._
 import java.awt.Color
 import javax.swing.SwingUtilities
 
+case object Tick
+case object StopMoving
+
 /**
- * A class to represent each instance of a "bubble".
+ * A class to model each instance of a "bubble/circle".
+ * Receives a `Tick`, which indicates the bubble should re-calc its position.
+ * Receives StopMoving, which tells the actor to stop re-calculating its position.
+ * (I'm using this instead of stopping the actor so the screen is drawn properly
+ * at the end of the game.)
  */
 class BubbleActor(
     bubblePanelActor: ActorRef,
@@ -14,43 +21,57 @@ class BubbleActor(
     bgColor: Color,
     char: Char,
     x: Int,
-    delta: Int) extends Actor {
+    deltaY: Int) extends Actor {
 
-  val panelWidth = SCREEN_WIDTH
-  val panelHeight = SCREEN_HEIGHT
-  val diameter = CIRCLE_DIAMETER
+  private val panelWidth = SCREEN_WIDTH
+  private val panelHeight = SCREEN_HEIGHT
+  private val diameter = CIRCLE_DIAMETER
   
-  var y = panelHeight - diameter
-  var lastX = 0
-  var lastY = 0
+  private var y = panelHeight - diameter
+  private var lastX = x
+  private var lastY = y
 
-  // pixels to move on each call
-  private val deltaY = delta
+  // is the actor in a 'stopped' state?
+  private var stopped = false
+  
+  private val bubble = Bubble(x, y, lastX, lastY, diameter, fgColor, bgColor, char)
   
   def receive = {
-    case Tick => recalculatePosition
-                 updateBubblePanel
+    case Tick => handleTick
+    case StopMoving => stopped = true 
     case _ =>
   }
   
-  override def postStop { 
-    println(s"OMG, the killed me (${this.name})") 
+  def handleTick {
+    if (! stopped) {
+      recalculatePosition
+    }
+    updateBubblePanel
   }
   
-  // TODO if (y <= 0) fire GameOver event
+  // removed 'x' calcs because only y-values change
   def recalculatePosition {
-    lastX = x
     lastY = y
     y = y + deltaY
     if (y <= 0) {
+      y = 0
       val actorManager = context.actorFor(Seq("..", ACTOR_MANAGER_NAME))
-      actorManager ! GameOver 
+      actorManager ! GameOver
+    } else {
+      bubble.y = y
+      bubble.lastY = lastY
     } 
   }
 
+  override def postStop { 
+    updateBubblePanel
+    println(s"OMG, they killed me (${this.name})") 
+  }
+
   def updateBubblePanel {
-    bubblePanelActor ! Bubble(x, y, lastX, lastY, diameter, fgColor, bgColor, char)
+    bubblePanelActor ! Redraw(bubble)
   }
 
 }
+
 

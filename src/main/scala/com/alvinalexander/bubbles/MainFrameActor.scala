@@ -10,10 +10,18 @@ import java.awt.event.KeyListener
 import java.awt.event.KeyEvent
 import akka.actor.ActorRef
 
+case object DisplayMainFrame
+case object ShowGameOverWindow
+case object ShowYouWinWindow
+
 /**
- * An Actor to handle all the interactions with the JFrame. 
+ * An Actor to handle all the interactions with the JFrame.
+ * User keystrokes trigger a noise and may kill a bubble (character actor).
  */
 class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
+
+  private var playSoundActor: ActorRef = null
+  private var actorManager: ActorRef = null
   
   def receive = {
     case DisplayMainFrame => showMainFrame
@@ -29,7 +37,7 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
         // TODO quit the app
       } else {
         // look up the peer actor and kill it (assuming the keystroke is right. invalid keystrokes cause no problems)
-        attemptToKillActorForCharacter(e.getKeyChar)
+        attemptToKillCharacterActor(e.getKeyChar)
       }
     }
 
@@ -45,22 +53,6 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
 
   configureMainFrame
   
-  def getCharacterActor(c: Char) = context.actorFor(Seq("..", c.toString))
-  def getPlaySoundActor = context.actorFor(Seq("..", PLAY_SOUND_ACTOR_NAME))
-  def attemptToKillActorForCharacter(c: Char) {
-    val characterActor = getCharacterActor(c)
-    val playSoundActor = getPlaySoundActor
-    if (characterActor.isTerminated) {
-      // character/actor does not exist
-      playSoundActor ! PlayFailureSound
-    } else {
-      // character/actor exists
-      playSoundActor ! PlaySuccessSound
-      val actorManager = context.actorFor(Seq("..", ACTOR_MANAGER_NAME))
-      actorManager ! KillActor(characterActor)
-    }
-  }
-
   def configureMainFrame {
     mainFrame.setTitle(APPLICATION_NAME)
     mainFrame.setBackground(Color.BLACK)
@@ -70,16 +62,48 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
     mainFrame.getRootPane.putClientProperty("Window.alpha", 0.9f)
   }
   
+  def lookupCharacterActor(c: Char) = context.actorFor(Seq("..", c.toString))
+
+  def getPlaySoundActor = {
+    if (playSoundActor == null) playSoundActor = context.actorFor(Seq("..", PLAY_SOUND_ACTOR_NAME))
+    playSoundActor
+  } 
+  
+  def getActorManager = {
+    if (actorManager == null) actorManager = context.actorFor(Seq("..", ACTOR_MANAGER_NAME))
+    actorManager
+  } 
+  
+  def attemptToKillCharacterActor(c: Char) {
+    val characterActor = lookupCharacterActor(c)
+    if (characterActor.isTerminated) {
+      // character-actor does not exist
+      getPlaySoundActor ! PlayFailureSound
+    } else {
+      // character-actor exists
+      getPlaySoundActor ! PlaySuccessSound
+      getActorManager ! KillActor(characterActor)
+    }
+  }
+
   def showGameOverWindow {
-    mainFrame.removeKeyListener(myKeyListener)
-    mainFrame.setGlassPane(new GameOverPanel)
-    mainFrame.getGlassPane.setVisible(true)
+    SwingUtilities.invokeLater(new Runnable {
+      def run {
+        mainFrame.removeKeyListener(myKeyListener)
+        mainFrame.setGlassPane(new OverlayPanel(230, 320, "GAME OVER", new Font("Sans Serif", Font.BOLD, 60), Color.RED))
+        mainFrame.getGlassPane.setVisible(true)
+      }
+    })
   }
   
   def showYouWinWindow {
-    mainFrame.removeKeyListener(myKeyListener)
-    mainFrame.setGlassPane(new YouWinPanel)
-    mainFrame.getGlassPane.setVisible(true)
+    SwingUtilities.invokeLater(new Runnable {
+      def run {
+        mainFrame.removeKeyListener(myKeyListener)
+        mainFrame.setGlassPane(new OverlayPanel(230, 320, "YOU WIN!", new Font("Sans Serif", Font.BOLD, 60), Color.GREEN))
+        mainFrame.getGlassPane.setVisible(true)
+      }
+    })
   }
 
   def showMainFrame {
@@ -94,23 +118,19 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
 
 ////////////////////////////////////
 
-// TODO refactor these classes
-class GameOverPanel extends JPanel {
-  override def paintComponent(g: Graphics) {
-    val g2 = g.asInstanceOf[Graphics2D]
-    g2.setFont(new Font("Sans Serif", Font.BOLD, 60))
-    g2.setColor(Color.RED)
-    g2.drawString("GAME OVER", 300, 320)
-  }
-  
-}
+class OverlayPanel(
+    x: Int, 
+    y: Int, 
+    message: String,
+    font: Font,
+    fontColor: Color) extends JPanel {
 
-class YouWinPanel extends JPanel {
+  setOpaque(false)
   override def paintComponent(g: Graphics) {
     val g2 = g.asInstanceOf[Graphics2D]
-    g2.setFont(new Font("Sans Serif", Font.BOLD, 60))
-    g2.setColor(Color.GREEN)
-    g2.drawString("YOU WIN!", 330, 320)
+    g2.setFont(font)
+    g2.setColor(fontColor)
+    g2.drawString(message, x, y)
   }
   
 }

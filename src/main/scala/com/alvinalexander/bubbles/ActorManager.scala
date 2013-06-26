@@ -13,14 +13,13 @@ case class SetInitialNumActors(num: Int)
  * 2) shut down the system
  * 3) show the "You Win" message when all the actors are stopped
  */
-class ActorManager extends Actor {
+class ActorManager(bubbles: Array[ActorRef]) extends Actor {
   
-  var activeActorCount = 0
+  private var activeActorCount = bubbles.size
 
   def receive = {
     case KillActor(actorRef) => doKillActorAction(actorRef)
     case GameOver => doGameOverAction
-    case SetInitialNumActors(n) => activeActorCount = n
     case _ =>
   }
   
@@ -35,9 +34,18 @@ class ActorManager extends Actor {
   }
   
   def doGameOverAction {
+    stopAllBubbles
     val mainFrameActor = getMainFrameActor
     mainFrameActor ! ShowGameOverWindow
-    shutdownApplication
+    // TODO don't shut the app down until the 'Game Over' overlay is shown
+    //shutdownApplication
+  }
+  
+  // use StopMoving so the panel redraws properly at the end (vs. context.stop) 
+  def stopAllBubbles {
+    for (b <- bubbles) {
+      b ! StopMoving
+    }
   }
   
   def getMainFrameActor = context.actorFor(Seq("..", MAIN_FRAME_ACTOR_NAME))
