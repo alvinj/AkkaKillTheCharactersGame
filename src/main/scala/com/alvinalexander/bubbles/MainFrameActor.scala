@@ -90,7 +90,7 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
     SwingUtilities.invokeLater(new Runnable {
       def run {
         mainFrame.removeKeyListener(myKeyListener)
-        mainFrame.setGlassPane(new OverlayPanel(230, 320, "GAME OVER", new Font("Sans Serif", Font.BOLD, 60), Color.RED))
+        mainFrame.setGlassPane(new OverlayPanel(240, 320, "GAME OVER", new Font("Sans Serif", Font.BOLD, 60), Color.RED))
         mainFrame.getGlassPane.setVisible(true)
       }
     })
@@ -100,7 +100,7 @@ class MainFrameActor(bubblePanel: BubblePanel) extends Actor {
     SwingUtilities.invokeLater(new Runnable {
       def run {
         mainFrame.removeKeyListener(myKeyListener)
-        mainFrame.setGlassPane(new OverlayPanel(230, 320, "YOU WIN!", new Font("Sans Serif", Font.BOLD, 60), Color.GREEN))
+        mainFrame.setGlassPane(new OverlayPanel(240, 320, "YOU WIN!", new Font("Sans Serif", Font.BOLD, 60), Color.GREEN))
         mainFrame.getGlassPane.setVisible(true)
       }
     })
