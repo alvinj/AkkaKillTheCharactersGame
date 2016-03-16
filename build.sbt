@@ -1,8 +1,3 @@
-import AssemblyKeys._
-
-// sbt-assembly
-assemblySettings
-
 name := "AkkaKillTheCharactersGame"
 
 version := "1.0"
